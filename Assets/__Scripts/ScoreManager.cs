@@ -1,121 +1,216 @@
 ﻿using System.Collections;
+
 using System.Collections.Generic;
+
 using UnityEngine;
 
-//enum to handle all the possible scoring events
+
+
+// An enum to handle all the possible scoring events
+
 public enum eScoreEvent
 {
+
     draw,
+
     mine,
+
     mineGold,
+
     gameWin,
+
     gameLoss
+
 }
 
-public class ScoreManager : MonoBehaviour
-{
-    private static ScoreManager S;
 
-    public static int SCORE_FROM_PREV_ROUND = 0;
-    public static int HIGH_SCORE = 0;
+
+// ScoreManager handles all of the scoring
+
+public class ScoreManager : MonoBehaviour
+{                 // a
+
+    static private ScoreManager S;                            // b
+
+
+
+    static public int SCORE_FROM_PREV_ROUND = 0;
+
+    static public int HIGH_SCORE = 0;
+
+
 
     [Header("Set Dynamically")]
+
+    // Fields to track score info
+
     public int chain = 0;
+
     public int scoreRun = 0;
+
     public int score = 0;
+
+
 
     void Awake()
     {
-        if (S == null)
-        {
-            S = this; //set the private singleton
-        }
 
+        if (S == null)
+        {                                        // c
+
+            S = this; // Set the private singleton 
+
+        }
         else
         {
-            Debug.Log("ERROR: ScoreManager.Aware(): S is already set");
+
+            Debug.LogError("ERROR: ScoreManager.Awake(): S is already set!");
+
         }
 
-        //check for a high score in the PlayerPrefs
+
+
+        // Check for a high score in PlayerPrefs
+
         if (PlayerPrefs.HasKey("ProspectorHighScore"))
         {
+
             HIGH_SCORE = PlayerPrefs.GetInt("ProspectorHighScore");
+
         }
 
-        //add the score from last round, which will be > 0 if it was a win
-        score = score + SCORE_FROM_PREV_ROUND;
+        // Add the score from last round, which will be >0 if it was a win
 
-        //and reset the SCORE_FROM_PREV_ROUND 
+        score += SCORE_FROM_PREV_ROUND;
+
+        // And reset the SCORE_FROM_PREV_ROUND
+
         SCORE_FROM_PREV_ROUND = 0;
+
     }
 
-    public static void EVENT(eScoreEvent evt)
-    {
-        try
-        { //try-catch stops an error from breaking your program
-            S.Event(evt);
-        }
 
+
+    static public void EVENT(eScoreEvent evt)
+    {                  // d
+
+        try
+        { // try-catch stops an error from breaking your program
+
+            S.Event(evt);
+
+        }
         catch (System.NullReferenceException nre)
         {
-            Debug.LogError("ScoreManager.EVENT() called while s=null.\n" + nre);
+
+            Debug.LogError  ("ScoreManager:EVENT() called while S=null.\n" + nre);
+
         }
+
     }
+
 
     void Event(eScoreEvent evt)
     {
+
         switch (evt)
         {
-            //same things need to happen whether it's a draw, a win, or a lose
-            case eScoreEvent.draw: //drawing the card
-            case eScoreEvent.gameWin: //won the round
-            case eScoreEvent.gameLoss: //lost the round
-                chain = 0;
-                score += scoreRun;
-                scoreRun = 0;
+
+            // Same things need to happen whether it's a draw, a win, or a loss
+
+            case eScoreEvent.draw:     // Drawing a card
+
+            case eScoreEvent.gameWin:  // Won the round
+
+            case eScoreEvent.gameLoss: // Lost the round
+
+                chain = 0;             // resets the score chain
+
+                score += scoreRun;     // add scoreRun to total score
+
+                scoreRun = 0;          // reset scoreRun
+
                 break;
 
-            case eScoreEvent.mine:
-                chain++;
-                scoreRun += chain;
+
+
+
+
+
+            case eScoreEvent.mine:    // Remove a mine card
+
+                chain++;              // increase the score chain
+
+                scoreRun += chain;    // add score for this card to run
+
                 break;
+
         }
 
-        //this second switch statement handles round wins and loses
+
+
+        // This second switch statement handles round wins and losses
+
         switch (evt)
         {
+
             case eScoreEvent.gameWin:
 
-                //if its a win, add the score to the next round
-                //static fields are NOT reset by SceneManager.LoadScene()
+                // If it's a win, add the score to the next round
+
+                // static fields are NOT reset by SceneManager.LoadScene()
+
                 SCORE_FROM_PREV_ROUND = score;
-                print("You won this round! Round Score " + score);
+
+                print("You won this round! Round score: " + score);
+
                 break;
+
+
+
 
             case eScoreEvent.gameLoss:
 
-                //if its a loss, check against the high score
+                // If it's a loss, check against the high score
+
                 if (HIGH_SCORE <= score)
                 {
-                    print("You got the high score! High Score: " + score);
-                    HIGH_SCORE = score;
-                    PlayerPrefs.SetInt("ProspectorHighScore", score);
-                }
 
+                    print("You got the high score! High score: " + score);
+
+                    HIGH_SCORE = score;
+
+                    PlayerPrefs.SetInt("ProspectorHighScore", score);
+
+                }
                 else
                 {
-                    print("Your final score for this game was: " + score);
+
+                    print("Your final score for the game was: " + score);
+
                 }
 
                 break;
 
+
+
+
             default:
-                print("score: " + score + " scoreRun: " + scoreRun + " chain: " + chain);
+
+                print("score: " + score + " scoreRun:" + scoreRun + " chain:" + chain);
+
                 break;
+
         }
+
     }
 
-    static public int CHAIN { get { return S.chain; } }
+
+
+    static public int CHAIN { get { return S.chain; } }             // e
+
     static public int SCORE { get { return S.score; } }
+
     static public int SCORE_RUN { get { return S.scoreRun; } }
+
 }

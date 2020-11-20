@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3448535430713821264}
   - component: {fileID: 3448535430713821266}
   - component: {fileID: 3448535430713821267}
-  - component: {fileID: 8844270683798827685}
+  - component: {fileID: 2746139482676449251}
   m_Layer: 5
   m_Name: PrefabFloatingScore
   m_TagString: Untagged
@@ -68,7 +68,7 @@ MonoBehaviour:
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 28
-    m_FontStyle: 0
+    m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
@@ -79,7 +79,7 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 0
---- !u!114 &8844270683798827685
+--- !u!114 &2746139482676449251
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
