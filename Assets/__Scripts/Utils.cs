@@ -65,7 +65,7 @@ public class Utils : MonoBehaviour
 	}
 
 	// Make a static read-only public property camBounds
-	static public Bounds camBounds
+	static public Bounds CamBounds
 	{
 		get
 		{
@@ -115,7 +115,7 @@ public class Utils : MonoBehaviour
 	public static Vector3 ScreenBoundsCheck(Bounds bnd, BoundsTest test = BoundsTest.center)
 	{
 		// Call the more generic BoundsInBoundsCheck with camBounds as bigB
-		return (BoundsInBoundsCheck(camBounds, bnd, test));
+		return (BoundsInBoundsCheck(CamBounds, bnd, test));
 	}
 
 	// Tests to see whether lilB is inside bigB
@@ -246,7 +246,7 @@ public class Utils : MonoBehaviour
 	public static GameObject FindTaggedParent(GameObject go)
 	{
 		// If this gameObject has a tag
-		if (go.tag != "Untagged")
+		if (!go.CompareTag("Untagged"))
 		{
 			// then return this gameObject
 			return (go);
@@ -439,7 +439,7 @@ public class Utils : MonoBehaviour
 
 	//============================ Trace & Logging Functions ============================
 
-	static public void tr(params object[] objs)
+	static public void Tr(params object[] objs)
 	{
 		string s = objs[0].ToString();
 		for (int i = 1; i < objs.Length; i++)
@@ -596,16 +596,15 @@ public class Easing
 			}
 			else
 			{
-				float parseRes;
-				if (float.TryParse(curveA[1], out parseRes))
-				{
-					ecc.mods.Add(parseRes);
-				}
-				else
-				{
-					ecc.mods.Add(float.NaN);
-				}
-			}
+                if (float.TryParse(curveA[1], out float parseRes))
+                {
+                    ecc.mods.Add(parseRes);
+                }
+                else
+                {
+                    ecc.mods.Add(float.NaN);
+                }
+            }
 		}
 		cache.Add(curveIn, ecc);
 	}
