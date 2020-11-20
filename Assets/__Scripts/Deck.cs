@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Deck : MonoBehaviour
 {
+    [Header("Set In Inspector")]
+    public bool startFaceUp = false;
+
     public Sprite suitClub;
     public Sprite suitDiamond;
     public Sprite suitHeart;
@@ -20,6 +23,7 @@ public class Deck : MonoBehaviour
     public GameObject prefabCard;
     public GameObject prefabSprite;
     
+    [Header("Set Dynamically")]
     public PT_XMLReader xmlr;
     public List<string> cardNames;
     public List<Card> cards;
@@ -27,8 +31,6 @@ public class Deck : MonoBehaviour
     public List<CardDefinition> cardDefs;
     public Transform deckAnchor;
     public Dictionary<string, Sprite> dictSuits;
-
-    public bool startFaceUp = false;
 
     public void InitDeck(string deckXMLText)
     {
@@ -191,7 +193,6 @@ public class Deck : MonoBehaviour
                 _tSR.sprite = _tSp;
                 _tSR.color = card.color;
             }
-
             _tSR.sortingOrder = 1;
             _tGO.transform.SetParent(card.transform);
             _tGO.transform.localPosition = deco.loc;
@@ -203,7 +204,6 @@ public class Deck : MonoBehaviour
             {
                 _tGO.transform.localScale = Vector3.one * deco.scale;
             }
-
             _tGO.name = deco.type;
             card.decoGOs.Add(_tGO);
         }
@@ -211,7 +211,7 @@ public class Deck : MonoBehaviour
 
     private void AddPips(Card card)
     {
-        foreach(Decorator pip in card.def.pips)
+        foreach (Decorator pip in card.def.pips)
         {
             _tGO = Instantiate(prefabSprite) as GameObject;
             _tGO.transform.SetParent(card.transform);
@@ -220,11 +220,10 @@ public class Deck : MonoBehaviour
             {
                 _tGO.transform.rotation = Quaternion.Euler(0, 0, 180);
             }
-            if(pip.scale != 1)
+            if (pip.scale != 1)
             {
                 _tGO.transform.localScale = Vector3.one * pip.scale;
             }
-
             _tGO.name = "pip";
             _tSR = _tGO.GetComponent<SpriteRenderer>();
             _tSR.sprite = dictSuits[card.suit];
@@ -235,16 +234,16 @@ public class Deck : MonoBehaviour
 
     private void AddFace(Card card)
     {
-        if(card.def.face == "")
+        if (card.def.face == "")
         {
             return;
         }
-
         _tGO = Instantiate(prefabSprite) as GameObject;
         _tSR = _tGO.GetComponent<SpriteRenderer>();
+
         _tSp = GetFace(card.def.face + card.suit);
         _tSR.sprite = _tSp;
-        _tSR.sortingOrder = 1;
+        _tSR.sortingOrder = 2;
         _tGO.transform.SetParent(card.transform);
         _tGO.transform.localPosition = Vector3.zero;
         _tGO.name = "face";
@@ -266,12 +265,11 @@ public class Deck : MonoBehaviour
         _tSR.sprite = cardBack;
         _tGO.transform.SetParent(card.transform);
         _tGO.transform.localPosition = Vector3.zero;
+
         _tSR.sortingOrder = 2;
         _tGO.name = "back";
         card.back = _tGO;
-
         card.faceUp = startFaceUp;
-
     }
 
     static public void Shuffle(ref List<Card> oCards)
